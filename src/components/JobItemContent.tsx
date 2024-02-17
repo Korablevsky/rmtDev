@@ -1,13 +1,19 @@
 import { useActiveId, useJobItem } from '../lib/hooks'
 import BookmarkIcon from './BookmarkIcon'
+import Spinner from './Spinner'
 
 export default function JobItemContent() {
 	const activeId = useActiveId()
-	const jobItem = useJobItem(activeId)
+	const { jobItem, isLoading } = useJobItem(activeId)
+
+	if (isLoading) {
+		return <LoadingJobContent />
+	}
 
 	if (!jobItem) {
 		return <EmptyJobContent />
 	}
+
 	return (
 		<section className='job-details'>
 			<div>
@@ -58,8 +64,8 @@ export default function JobItemContent() {
 						</div>
 						<ul className='qualifications__list'>
 							{jobItem.qualifications &&
-								jobItem.qualifications.map((qualification, index) => (
-									<li key={index} className='qualifications__item'>
+								jobItem.qualifications.map(qualification => (
+									<li key={qualification} className='qualifications__item'>
 										{qualification}
 									</li>
 								))}
@@ -76,7 +82,7 @@ export default function JobItemContent() {
 						<ul className='reviews__list'>
 							{jobItem.reviews &&
 								jobItem.reviews.map(review => (
-									<li className='reviews__item'>{review}</li>
+									<li className='reviews__item' key={review}>{review}</li>
 								))}
 						</ul>
 					</section>
@@ -89,6 +95,16 @@ export default function JobItemContent() {
 						it!
 					</p>
 				</footer>
+			</div>
+		</section>
+	)
+}
+
+function LoadingJobContent() {
+	return (
+		<section className='job-details'>
+			<div>
+				<Spinner />
 			</div>
 		</section>
 	)
