@@ -17,4 +17,6 @@ export type JobItemExpanded = JobItem & {
 	coverImgURL: string
 	comanyURL: string
 }
+
+export type PageDirection = 'next' | 'previous'
 export type SortBy = 'relevant' | 'recent'

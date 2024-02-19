@@ -8,7 +8,7 @@ type JobListItemProps = {
 
 export default function JobListItem({ jobItem, isActive }: JobListItemProps) {
 	return (
-		<li className={`job-item ${isActive ? 'job-item--active': ""}`}>
+		<li className={`job-item ${isActive ? 'job-item--active' : ''}`}>
 			<a href={`#${jobItem.id}`} className='job-item__link'>
 				<div className='job-item__badge'>{jobItem.badgeLetters}</div>
 
@@ -18,7 +18,7 @@ export default function JobListItem({ jobItem, isActive }: JobListItemProps) {
 				</div>
 
 				<div className='job-item__right'>
-					<BookmarkIcon />
+					<BookmarkIcon id={jobItem.id} />
 					<time className='job-item__time'>{jobItem.daysAgo}d</time>
 				</div>
 			</a>

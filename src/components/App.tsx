@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { RESULTS_PER_PAGE } from '../lib/constants'
 import { useDebounce, useJobItems } from '../lib/hooks'
-import { SortBy } from '../lib/types'
+import { PageDirection, SortBy } from '../lib/types'
 import Background from './Background'
 import BookmarksButton from './BookmarksButton'
 import Container from './Container'
@@ -27,14 +27,13 @@ function App() {
 	// derived / computed state
 	const totalNumberOfResults = jobItems?.length || 0
 	const totalNumberOfPages = totalNumberOfResults / RESULTS_PER_PAGE
-	const jobItemsSorted =
-		jobItems?.sort((a, b) => {
-			if (sortBy === 'relevant') {
-				return b.relevanceScore - a.relevanceScore
-			} else {
-				return a.daysAgo - b.daysAgo
-			}
-		}) || []
+	const jobItemsSorted = [...(jobItems || [])].sort((a, b) => {
+		if (sortBy === 'relevant') {
+			return b.relevanceScore - a.relevanceScore
+		} else {
+			return a.daysAgo - b.daysAgo
+		}
+	})
 	const jobsItemsSortedAndSliced =
 		jobItemsSorted.slice(
 			currentPage * RESULTS_PER_PAGE - RESULTS_PER_PAGE,
@@ -42,7 +41,8 @@ function App() {
 		) || []
 
 	// event handlers / actions
-	const handleChangePage = (direction: 'next' | 'previous') => {
+	
+	const handleChangePage = (direction: PageDirection) => {
 		if (direction === 'next') {
 			setCurrentPage(prev => prev + 1)
 		} else if (direction === 'previous') {
