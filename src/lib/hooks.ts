@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { BASE_API_URL } from './constants'
 import { JobItem, JobItemExpanded } from './types'
 import { handleError } from './utils'
+import { BookmarksContext } from '../context/BookmarksContextProvider'
 
 type JobItemApiResponse = {
 	public: boolean
@@ -18,24 +19,6 @@ const fetchJobItem = async (id: number): Promise<JobItemApiResponse> => {
 
 	const data = await response.json()
 	return data
-}
-
-export function useActiveId() {
-	const [activeid, setActiveid] = useState<number | null>(null)
-
-	useEffect(() => {
-		const handleHashChange = () => {
-			const id = +window.location.hash.slice(1)
-			setActiveid(id)
-		}
-		handleHashChange()
-
-		window.addEventListener('hashchange', handleHashChange)
-
-		return () => window.removeEventListener('hashchange', handleHashChange)
-	}, [])
-
-	return activeid
 }
 
 export function useJobItem(id: number | null) {
@@ -110,4 +93,47 @@ export function useDebounce<T>(value: T, delay = 500): T {
 	}, [value, delay])
 
 	return debouncedValue
+}
+export function useActiveId() {
+	const [activeid, setActiveid] = useState<number | null>(null)
+
+	useEffect(() => {
+		const handleHashChange = () => {
+			const id = +window.location.hash.slice(1)
+			setActiveid(id)
+		}
+		handleHashChange()
+
+		window.addEventListener('hashchange', handleHashChange)
+
+		return () => window.removeEventListener('hashchange', handleHashChange)
+	}, [])
+
+	return activeid
+}
+export function useLocalStorage<T>(
+	key: string,
+	initialValue: T
+): [T, React.Dispatch<React.SetStateAction<T>>] {
+	const [value, setValue] = useState(() =>
+		JSON.parse(localStorage.getItem(key) || JSON.stringify(initialValue))
+	)
+
+	useEffect(() => {
+		localStorage.setItem(key, JSON.stringify(value))
+	}, [value, key])
+
+	return [value, setValue] as const
+}
+
+// --------------------------------
+
+export function useBookmarksContext() {
+	const context = useContext(BookmarksContext)
+	if (!context) {
+		throw new Error(
+			'useBookmarks must be used within a BookmarksContextProvider'
+		)
+	}
+	return context
 }
