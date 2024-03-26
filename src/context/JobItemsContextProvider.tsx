@@ -89,6 +89,8 @@ export default function JobItemsContextProvider({
 			totalNumberOfResults,
 			currentPage,
 			sortBy,
+			handleChangePage,
+			handleChangesortBy,
 		]
 	)
 
